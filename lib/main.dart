@@ -1,27 +1,32 @@
 import 'package:flutter/material.dart';
 import 'intro.dart'; 
 
+// Fungsi utama yang akan dijalankan pertama kali saat aplikasi dibuka
 void main() {
   runApp(const BukuBooksApp());
 }
 
+// Widget utama dari aplikasi kita
 class BukuBooksApp extends StatelessWidget {
   const BukuBooksApp({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // MaterialApp adalah widget utama yang ngatur tema dan halaman awal
     return MaterialApp(
-      title: 'BukuBooks',
+      title: 'BukuBooks', // Judul aplikasi
       theme: ThemeData(
+        // Menentukan tema warna utama aplikasi, disini pake warna teal
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
         useMaterial3: true,
       ),
-      home: const IntroPage(),
+      home: const IntroPage(), // Halaman pertama yang muncul saat app dibuka
       debugShowCheckedModeBanner: false,
     );
   }
 }
 
+// Membuat widget HomePage yang bisa berubah-ubah
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -29,16 +34,19 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
+// Kelas untuk mengatur perubahan yang terjadi di HomePage
 class _HomePageState extends State<HomePage> {
   int _currentImageIndex = 0;
   String _searchQuery = "";
 
+// Daftar gambar yang bakal ditampilkan di carousel (slider gambar)
   final List<String> carouselImages = [
     'assets/gambar1.jpg',
     'assets/gambar2.jpg',
     'assets/gambar3.jpg',
   ];
 
+// // Daftar buku-buku yang termasuk kategori best seller
   final List<Map<String, dynamic>> bestsellers = [
     {
       'image': 'assets/best1.jpg',
@@ -132,6 +140,7 @@ class _HomePageState extends State<HomePage> {
     },
   ];
 
+// Daftar buku-buku yang termasuk kategori belum rilis (Coming Soon)
   final List<Map<String, dynamic>> comingSoon = [
     {
       'image': 'assets/soon1.jpg',
@@ -175,18 +184,21 @@ class _HomePageState extends State<HomePage> {
     },
   ];
 
+// Fungsi buat mindahin gambar carousel ke gambar berikutnya (geser)
   void _nextImage() {
     setState(() {
       _currentImageIndex = (_currentImageIndex + 1) % carouselImages.length;
     });
   }
 
+// Fungsi buat nyaring daftar buku berdasarkan kata kunci pencarian user
   List<Map<String, dynamic>> _searchBooks(List<Map<String, dynamic>> books) {
     return books.where((book) {
       return book['title'].toLowerCase().contains(_searchQuery.toLowerCase());
     }).toList();
   }
 
+// Fungsi buat navigasi ke halaman detail buku tertentu
   void _navigateToDetail(Map<String, dynamic> book) {
     Navigator.push(
       context,
@@ -199,6 +211,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // Ini buat bikin AppBar (bagian atas layar)
       appBar: AppBar(
   title: Row(
     mainAxisSize: MainAxisSize.min, // Ini untuk memastikan ikon dan teks berada dalam satu baris
@@ -241,6 +254,7 @@ class _HomePageState extends State<HomePage> {
   ),
 ),
 
+// Body dari halaman, bisa discroll
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -268,15 +282,18 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
+
+          // Kalau user lagi nyari buku
             if (_searchQuery.isNotEmpty) ...[
-              _buildSectionTitle('Hasil Pencarian Buku'),
-              _buildBookList(_searchBooks(bestsellers), showPrice: true),
-              _buildBookList(_searchBooks(comingSoon), showPrice: false),
+              _buildSectionTitle('Hasil Pencarian Buku'), // Judul bagian hasil pencarian
+              _buildBookList(_searchBooks(bestsellers), showPrice: true), // Tampilkan hasil pencarian dari bestsellers
+              _buildBookList(_searchBooks(comingSoon), showPrice: false), // Tampilkan hasil pencarian dari coming soon
             ] else ...[
+              // Kalau user nggak lagi nyari, tampilkan list default
               _buildSectionTitle('Buku Populer'),
-              _buildBookList(bestsellers, showPrice: true),
-              _buildSectionTitle('Buku Yang Akan Di Rilis'),
-              _buildBookList(comingSoon, showPrice: false),
+              _buildBookList(bestsellers, showPrice: true), // Tampilkan buku populer
+              _buildSectionTitle('Buku Yang Akan Di Rilis'), // Judul bagian buku akan rilis
+              _buildBookList(comingSoon, showPrice: false), // Tampilkan buku akan rilis
             ],
           ],
         ),
@@ -285,6 +302,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildSectionTitle(String title) {
+    // Widget ini buat nampilin judul section kayak "Buku Populer" atau "Buku Yang Akan Dirilis"
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Text(title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
@@ -292,6 +310,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildBookList(List<Map<String, dynamic>> books, {required bool showPrice}) {
+    // Widget ini buat nampilin daftar buku secara horizontal
     return SizedBox(
       height: 230,
       child: ListView.builder(
